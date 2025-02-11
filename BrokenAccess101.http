@@ -1,0 +1,6 @@
+@BrokenAccess101_HostAddress = http://localhost:5015
+
+GET {{BrokenAccess101_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
