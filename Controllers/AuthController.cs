@@ -22,9 +22,11 @@ namespace BrokenAuthDemo.Controllers
                 return Unauthorized($"Invalid credentials {HttpContext.Session.Id}");
             }
 
-            // Vulnerable: Reusing session ID without regeneration / No clear session
-            // Set the new session data
+            HttpContext.Session.Clear();
+
             HttpContext.Session.SetString("User", user.Username);
+
+            HttpContext.Session.CommitAsync().Wait();
 
             return Ok($"Login successful {HttpContext.Session.Id}");
         }

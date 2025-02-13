@@ -1,0 +1,39 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 8.0
+      # docker: 20
+    commands:
+      - echo Installing .NET 8.0 SDK and Docker...
+  pre_build:
+    commands:
+      - echo Restoring dependencies...
+      - dotnet restore
+      # - echo Logging in to Amazon ECR...
+      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Building the application...
+      - dotnet build --configuration Release
+      - echo Running tests...
+      - dotnet test --configuration Release --no-build
+      - echo Building Docker image...
+      # - docker build -t brokenauthdemo:latest .
+  post_build:
+    commands:
+      - echo Publishing the application...
+      - dotnet publish --configuration Release --output ./publish_output
+      # - echo Tagging and pushing Docker image to ECR...
+      # - docker tag brokenauthdemo:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/brokenauthdemo:latest
+      # - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/brokenauthdemo:latest
+      # - echo Writing image definitions file...
+      # - printf '[{"name":"brokenauthdemo","imageUri":"%s"}]' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/brokenauthdemo:latest > imagedefinitions.json
+artifacts:
+  files:
+    # - imagedefinitions.json
+    # - taskdef.json
+    # - appspec.yml
+    # - scripts/**/*
+    - bin/**/*
